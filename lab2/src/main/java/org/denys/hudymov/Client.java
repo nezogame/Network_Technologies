@@ -2,6 +2,7 @@ package org.denys.hudymov;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class Client {
     private Socket socket = null;
@@ -11,6 +12,7 @@ public class Client {
 
     // constructor to put ip address and port
     public Client(String address, int port) {
+        Scanner scanner = new Scanner(System.in);
         // establish a connection
         try {
             socket = new Socket(address, port);
@@ -33,17 +35,18 @@ public class Client {
 
         // string to read message from input
         String line = "";
-
         // keep reading until "Stop" is input
-        while (!line.equals("Stop")) {
+        while (!line.contains("переміг!")) {
             try {
-                line = input.readLine();
-                out.writeUTF(line);
-                line = in.readUTF();
+                line =in.readUTF();
                 System.out.println(line);
-            } catch (IOException i) {
-                System.out.println(i);
+                var row = scanner.nextInt();
+                var col = scanner.nextInt();
+                out.writeUTF(row+" "+col);
+            } catch (IOException e) {
+                System.err.println("You was disconnected: " + e.getMessage());
             }
+
         }
 
         // close the connection
@@ -51,12 +54,16 @@ public class Client {
             input.close();
             out.close();
             socket.close();
-        } catch (IOException i) {
+        } catch (
+                IOException i) {
             System.out.println(i);
         }
+
     }
 
+
     public static void main(String args[]) {
+        //Client client = new Client("192.168.8.249", 6666);
         Client client = new Client("127.0.0.1", 5000);
     }
 }
