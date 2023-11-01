@@ -51,6 +51,8 @@ public class Server {
         ) {
             Scanner scanner = new Scanner(System.in);
             StringBuilder serverResponse = new StringBuilder();
+            serverResponse.append(simaGame.printBoard());
+            serverResponse.append("\nГравець 1 , введіть координати (рядок і стовпець):");
             try {
                 out.writeUTF(serverResponse.toString());
             } catch (IOException ex) {
@@ -59,6 +61,7 @@ public class Server {
 
             String clientResponse;
             while (true) {
+                serverResponse.delete(1,serverResponse.length());
                 System.out.println(simaGame.printBoard());
                 int row = 0;
                 int col = 0;
@@ -88,15 +91,17 @@ public class Server {
                 var move = simaGame.run(row, col);
                 // Process the client's move and get a response
                 String processedMove = processClientMove(move);
+                System.out.println(processedMove);
                 if (processedMove.equals("Гравець 1 переміг!") || processedMove.equals("Гравець 2 переміг!")) {
                     out.writeUTF(processedMove);
                     break;
                 }
-                System.out.println("isPlayer1Turn: "+simaGame.isPlayer1Turn());
                 // Send the response back to the client
                 if (simaGame.isPlayer1Turn()) {
+                    System.out.println("Гравець 1 зробив хід.");
                     serverResponse.append(simaGame.printBoard());
-                    serverResponse.append("\nГравець 1, зробив хід");
+                    serverResponse.append("\n").append(processedMove);
+                    serverResponse.append("\nГравець 1 , введіть координати (рядок і стовпець):");
                     try {
                         out.writeUTF(serverResponse.toString());
                     } catch (IOException e) {
@@ -104,7 +109,14 @@ public class Server {
                         throw new RuntimeException(e);
                     }
                 }else{
-
+                    serverResponse.append(simaGame.printBoard());
+                    serverResponse.append("\nГравець 2 , зробив хід.");
+                    try {
+                        out.writeUTF(serverResponse.toString());
+                    } catch (IOException e) {
+                        System.out.println();
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         } catch (IOException e) {
