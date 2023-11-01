@@ -92,15 +92,6 @@ public class SimaGame {
         // Перевірка, чи можна розмістити відрізок на це поле
         if (board[row][col] == ' ') {
             // Перевірка, чи не перетинається лінія
-            return isDiagonalIntersections(row, col);
-        }
-        return false;
-    }
-
-    public boolean isDiagonalIntersections(int row, int col) {
-        // Перевірка, чи можна розмістити відрізок на це поле
-        if (board[row][col] == ' ') {
-            // Перевірка, чи не перетинається лінія
             return !intersectsLine(row, col);
         }
         return false;
@@ -126,19 +117,20 @@ public class SimaGame {
 
     // Check if all surrounding cells are occupied
     public boolean checkSurroundingCellsOccupied(int row, int col) {
-        // Check in a cross pattern around the given coordinate
-        return isValidMove(row - 1, col - 1) && // left up
-                isValidMove(row + 1, col - 1) && // right up
-                isValidMove(row + 1, col + 1) &&   //right down
-                isValidMove(row - 1, col + 1) &&
-                isValidMove(row - 1, col) && //Up
-                isValidMove(row + 1, col) && //Down
-                isValidMove(row, col - 1) && //Left
-                isValidMove(row, col + 1); //Right
+        boolean leftUp = (row == 0 || col == 0) || isValidMove(row - 1, col - 1);
+        boolean leftDown = (row == 6 || col == 0) || isValidMove(row + 1, col - 1);
+        boolean rightDown = (row == 6 || col == 6) || isValidMove(row + 1, col + 1);
+        boolean rightUp = (row == 0 || col == 6) || isValidMove(row - 1, col + 1);
+        boolean up = (row == 0) || isValidMove(row - 1, col);
+        boolean down = (row == 6) || isValidMove(row + 1, col);
+        boolean left = (col == 0) || isValidMove(row, col - 1);
+        boolean right = (col == 6) || isValidMove(row, col + 1);
+
+        return leftUp || leftDown || rightDown || rightUp || up || down || left || right;
     }
 
     // Метод, який перевіряє, чи гравець переміг
     public boolean isGameOver(int row, int col) {
-        return checkSurroundingCellsOccupied(row, col);
+        return !checkSurroundingCellsOccupied(row, col);
     }
 }
