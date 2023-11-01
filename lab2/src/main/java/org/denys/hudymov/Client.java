@@ -32,19 +32,26 @@ public class Client {
             System.out.println(i);
             return;
         }
-
         // string to read message from input
         String line = "";
         // keep reading until "Stop" is input
-        while (!line.contains("переміг!")) {
+        while (true) {
+            if (line.contains("переміг!")) {
+                break;
+            }
             try {
-                line =in.readUTF();
+                line = in.readUTF();
+                if (line.contains("Гравець 2 , зробив хід.")) {
+                    System.out.println(line);
+                    continue;
+                }
                 System.out.println(line);
                 var row = scanner.nextInt();
                 var col = scanner.nextInt();
-                out.writeUTF(row+" "+col);
+                out.writeUTF(row + " " + col);
             } catch (IOException e) {
-                System.err.println("You was disconnected: " + e.getMessage());
+                System.err.println("Server was Stopped and You was disconnected: " + e.getMessage());
+                break;
             }
 
         }
