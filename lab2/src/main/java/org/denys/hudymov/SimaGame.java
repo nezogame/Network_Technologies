@@ -60,7 +60,7 @@ public class SimaGame {
         // Перевіряємо, чи гра закінчилася
         if (isGameOver(row, col)) {
             printBoard();
-            return (player1Turn ? "Player1Wins" : "Player2Wins");
+            return (player1Turn ? "Player2Wins" : "Player1Wins");
         }
 
         // Змінюємо чергу гравця
@@ -117,20 +117,25 @@ public class SimaGame {
 
     // Check if all surrounding cells are occupied
     public boolean checkSurroundingCellsOccupied(int row, int col) {
-        boolean leftUp = (row == 0 || col == 0) || isValidMove(row - 1, col - 1);
-        boolean leftDown = (row == 6 || col == 0) || isValidMove(row + 1, col - 1);
-        boolean rightDown = (row == 6 || col == 6) || isValidMove(row + 1, col + 1);
-        boolean rightUp = (row == 0 || col == 6) || isValidMove(row - 1, col + 1);
-        boolean up = (row == 0) || isValidMove(row - 1, col);
-        boolean down = (row == 6) || isValidMove(row + 1, col);
-        boolean left = (col == 0) || isValidMove(row, col - 1);
-        boolean right = (col == 6) || isValidMove(row, col + 1);
+        boolean leftUp = (row == 0 || col == 0) || !isValidMove(row - 1, col - 1);
+        boolean leftDown = (row == 6 || col == 0) || !isValidMove(row + 1, col - 1);
+        boolean rightDown = (row == 6 || col == 6) || !isValidMove(row + 1, col + 1);
+        boolean rightUp = (row == 0 || col == 6) || !isValidMove(row - 1, col + 1);
+        boolean up = (row == 0) || !isValidMove(row - 1, col);
+        boolean down = (row == 6) || !isValidMove(row + 1, col);
+        boolean left = (col == 0) || !isValidMove(row, col - 1);
+        boolean right = (col == 6) || !isValidMove(row, col + 1);
 
-        return leftUp || leftDown || rightDown || rightUp || up || down || left || right;
+        return (leftUp && leftDown && rightDown && rightUp && up && down && left && right);
     }
 
     // Метод, який перевіряє, чи гравець переміг
     public boolean isGameOver(int row, int col) {
-        return !checkSurroundingCellsOccupied(row, col);
+        return checkSurroundingCellsOccupied(row, col);
+    }
+
+    public void cleanBoard() {
+        prevMove.clear();
+        initializeMiddle();
     }
 }
