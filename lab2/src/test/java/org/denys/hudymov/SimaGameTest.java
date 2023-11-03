@@ -59,4 +59,25 @@ class SimaGameTest {
         System.out.println(s);
         System.out.println(simaGame.printBoard());
     }
+
+    @Test
+    public void testWin(){
+        simaGame.initializeMiddle();
+        simaGame.run(2, 2);
+        simaGame.run(1, 1);
+        simaGame.run(0, 0);
+        simaGame.run(0, 1);
+        simaGame.run(1, 2);
+        simaGame.run(2, 3);
+        simaGame.run(3, 4);
+        simaGame.run(4, 5);
+        simaGame.run(5, 4);
+        simaGame.run(6, 5);
+        simaGame.run(5, 6);
+        var s = simaGame.run(6, 6);
+        simaGame.run(1, 1);
+        simaGame.run(1, 2);
+        System.out.println(s);
+        System.out.println(simaGame.printBoard());
+    }
 }
