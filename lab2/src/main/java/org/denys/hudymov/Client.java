@@ -1,7 +1,12 @@
 package org.denys.hudymov;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Client {
@@ -13,6 +18,8 @@ public class Client {
     // constructor to put ip address and port
     public Client(String address, int port) {
         Scanner scanner = new Scanner(System.in);
+        Integer row = null;
+        Integer col;
         // establish a connection
         try {
             socket = new Socket(address, port);
@@ -36,19 +43,35 @@ public class Client {
         String line = "";
         // keep reading until "Stop" is input
         while (true) {
-            if (line.contains("переміг!")) {
+            if (line.contains("переміг у турнірі!")) {
                 break;
             }
             try {
                 line = in.readUTF();
-                if (line.contains("Гравець 2 , зробив хід.")) {
+                if (line.contains("Гравець 2 , зробив хід але хід некоректний.")) {
+                    System.out.println(line);
+                    continue;
+                }
+                if (line.contains("Наразі ходить гравець 2.") || line.contains("Гравець 2 , зробив хід.")) {
+                    System.out.println("Зараз ходить Гравець 2.");
+                    System.out.println(line);
+                    continue;
+                }
+                if (line.contains("Гравець 1 переміг!")) {
                     System.out.println(line);
                     continue;
                 }
                 System.out.println(line);
-                var row = scanner.nextInt();
-                var col = scanner.nextInt();
-                out.writeUTF(row + " " + col);
+                do {
+                    try {
+                        row = scanner.nextInt();
+                        col = scanner.nextInt();
+                        out.writeUTF(row + " " + col);
+                    } catch (InputMismatchException e) {
+                        System.err.println("Invalid input format");
+                        scanner.next(); // Очистити буфер введення
+                    }
+                } while (row == null);
             } catch (IOException e) {
                 System.err.println("Server was Stopped and You was disconnected: " + e.getMessage());
                 break;
